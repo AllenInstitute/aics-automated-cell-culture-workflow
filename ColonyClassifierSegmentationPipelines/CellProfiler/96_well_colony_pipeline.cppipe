@@ -1,0 +1,678 @@
+CellProfiler Pipeline: http://www.cellprofiler.org
+Version:5
+DateRevision:407
+GitHash:
+ModuleCount:42
+HasImagePlaneDetails:False
+
+Images:[module_num:1|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['To begin creating your project, use the Images module to compile a list of files and/or folders that you want to analyze. You can also specify a set of rules to include only the desired files in your selected folders.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    :
+    Filter images?:Images only
+    Select the rule criteria:and (extension does isimage) (directory doesnot containregexp "[\\\\/]\\.")
+
+Metadata:[module_num:2|svn_version:'Unknown'|variable_revision_number:6|show_window:False|notes:['The Metadata module optionally allows you to extract information describing your images (i.e, metadata) which will be stored along with your measurements. This information can be contained in the file name and/or location, or in an external file.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Extract metadata?:Yes
+    Metadata data type:Text
+    Metadata types:{}
+    Extraction method count:1
+    Metadata extraction method:Extract from file/folder names
+    Metadata source:File name
+    Regular expression to extract from file name:^(?P<Plate>.*)_Scan_(?P<DateString>.*)_Well_(?P<WellRow>[A-P]{1})(?P<WellColumn>[0-9]{1,2})_Ch1_-1um_resized(?P<Probability>.*)
+    Regular expression to extract from folder name:(?P<Date>[0-9]{4}_[0-9]{2}_[0-9]{2})$
+    Extract metadata from:All images
+    Select the filtering criteria:and (file does contain "")
+    Metadata file location:Elsewhere...|
+    Match file and image metadata:[]
+    Use case insensitive matching?:No
+    Metadata file name:None
+    Does cached metadata exist?:No
+
+NamesAndTypes:[module_num:3|svn_version:'Unknown'|variable_revision_number:8|show_window:False|notes:['The NamesAndTypes module allows you to assign a meaningful name to each image by which other modules will refer to it.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Assign a name to:Images matching rules
+    Select the image type:Grayscale image
+    Name to assign these images:well
+    Match metadata:[]
+    Image set matching method:Order
+    Set intensity range from:Image metadata
+    Assignments count:2
+    Single images count:0
+    Maximum intensity:255.0
+    Process as 3D?:No
+    Relative pixel spacing in X:1.0
+    Relative pixel spacing in Y:1.0
+    Relative pixel spacing in Z:1.0
+    Select the rule criteria:and (file does endwith "resized.tiff")
+    Name to assign these images:Brightfield
+    Name to assign these objects:Cell
+    Select the image type:Grayscale image
+    Set intensity range from:Image metadata
+    Maximum intensity:255.0
+    Select the rule criteria:and (file does endwith "Probabilities.tiff")
+    Name to assign these images:Probabilities
+    Name to assign these objects:Nucleus
+    Select the image type:Color image
+    Set intensity range from:Image metadata
+    Maximum intensity:255.0
+
+Groups:[module_num:4|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['The Groups module optionally allows you to split your list of images into image subsets (groups) which will be processed independently of each other. Examples of groupings include screening batches, microtiter plates, time-lapse movies, etc.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Do you want to group your images?:No
+    grouping metadata count:1
+    Metadata category:None
+
+ImageMath:[module_num:5|svn_version:'Unknown'|variable_revision_number:5|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Operation:Invert
+    Raise the power of the result by:1.0
+    Multiply the result by:1.0
+    Add to result:0.0
+    Set values less than 0 equal to 0?:Yes
+    Set values greater than 1 equal to 1?:Yes
+    Replace invalid values with 0?:Yes
+    Ignore the image masks?:No
+    Name the output image:ch_0_Inverted
+    Image or measurement?:Image
+    Select the first image:Brightfield
+    Multiply the first image by:1.0
+    Measurement:
+    Image or measurement?:Image
+    Select the second image:
+    Multiply the second image by:1.0
+    Measurement:
+
+Threshold:[module_num:6|svn_version:'Unknown'|variable_revision_number:12|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:ch_0_Inverted
+    Name the output image:ch_0_InvertedThresh
+    Threshold strategy:Global
+    Thresholding method:Otsu
+    Threshold smoothing scale:0
+    Threshold correction factor:1.0
+    Lower and upper bounds on threshold:0.98,1.0
+    Manual threshold:0.0
+    Select the measurement to threshold with:None
+    Two-class or three-class thresholding?:Three classes
+    Log transform before thresholding?:No
+    Assign pixels in the middle intensity class to the foreground or the background?:Foreground
+    Size of adaptive window:10
+    Lower outlier fraction:0.05
+    Upper outlier fraction:0.05
+    Averaging method:Mean
+    Variance method:Standard deviation
+    # of deviations:2
+    Thresholding method:Otsu
+
+ErodeImage:[module_num:7|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:ch_0_InvertedThresh
+    Name the output image:ch_0_Erosion
+    Structuring element:Disk,1
+
+DilateImage:[module_num:8|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:ch_0_Erosion
+    Name the output image:ch_0_InvertedEroded
+    Structuring element:Disk,1
+
+ImageMath:[module_num:9|svn_version:'Unknown'|variable_revision_number:5|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Operation:Invert
+    Raise the power of the result by:1.0
+    Multiply the result by:1.0
+    Add to result:0.0
+    Set values less than 0 equal to 0?:Yes
+    Set values greater than 1 equal to 1?:Yes
+    Replace invalid values with 0?:Yes
+    Ignore the image masks?:No
+    Name the output image:ch_0_Inverted
+    Image or measurement?:Image
+    Select the first image:Brightfield
+    Multiply the first image by:1.0
+    Measurement:
+    Image or measurement?:Image
+    Select the second image:
+    Multiply the second image by:1.0
+    Measurement:
+
+MaskImage:[module_num:10|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:ch_0_Inverted
+    Name the output image:ch_0_InvertedMask
+    Use objects or an image as a mask?:Image
+    Select object for mask:None
+    Select image for mask:ch_0_InvertedEroded
+    Invert the mask?:Yes
+
+IdentifyPrimaryObjects:[module_num:11|svn_version:'Unknown'|variable_revision_number:14|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:ch_0_InvertedMask
+    Name the primary objects to be identified:InvertedWell
+    Typical diameter of objects, in pixel units (Min,Max):20,700
+    Discard objects outside the diameter range?:Yes
+    Discard objects touching the border of the image?:Yes
+    Method to distinguish clumped objects:Shape
+    Method to draw dividing lines between clumped objects:Shape
+    Size of smoothing filter:10
+    Suppress local maxima that are closer than this minimum allowed distance:1500
+    Speed up by using lower-resolution image to find local maxima?:Yes
+    Fill holes in identified objects?:After both thresholding and declumping
+    Automatically calculate size of smoothing filter for declumping?:Yes
+    Automatically calculate minimum allowed distance between local maxima?:Yes
+    Handling of objects if excessive number of objects identified:Continue
+    Maximum number of objects:500
+    Display accepted local maxima?:No
+    Select maxima color:Blue
+    Use advanced settings?:Yes
+    Threshold setting version:12
+    Threshold strategy:Global
+    Thresholding method:Otsu
+    Threshold smoothing scale:0
+    Threshold correction factor:1.0
+    Lower and upper bounds on threshold:0.73,1
+    Manual threshold:0.5
+    Select the measurement to threshold with:None
+    Two-class or three-class thresholding?:Two classes
+    Log transform before thresholding?:No
+    Assign pixels in the middle intensity class to the foreground or the background?:Foreground
+    Size of adaptive window:10
+    Lower outlier fraction:0.05
+    Upper outlier fraction:0.05
+    Averaging method:Mean
+    Variance method:Standard deviation
+    # of deviations:2
+    Thresholding method:Default
+
+IdentifyPrimaryObjects:[module_num:12|svn_version:'Unknown'|variable_revision_number:14|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:Brightfield
+    Name the primary objects to be identified:NonInvertedWell
+    Typical diameter of objects, in pixel units (Min,Max):1250,1500
+    Discard objects outside the diameter range?:No
+    Discard objects touching the border of the image?:No
+    Method to distinguish clumped objects:Shape
+    Method to draw dividing lines between clumped objects:Shape
+    Size of smoothing filter:10
+    Suppress local maxima that are closer than this minimum allowed distance:1500
+    Speed up by using lower-resolution image to find local maxima?:Yes
+    Fill holes in identified objects?:After both thresholding and declumping
+    Automatically calculate size of smoothing filter for declumping?:Yes
+    Automatically calculate minimum allowed distance between local maxima?:No
+    Handling of objects if excessive number of objects identified:Continue
+    Maximum number of objects:500
+    Display accepted local maxima?:No
+    Select maxima color:Blue
+    Use advanced settings?:Yes
+    Threshold setting version:12
+    Threshold strategy:Global
+    Thresholding method:Otsu
+    Threshold smoothing scale:0
+    Threshold correction factor:1.0
+    Lower and upper bounds on threshold:0.1,0.1
+    Manual threshold:0.5
+    Select the measurement to threshold with:None
+    Two-class or three-class thresholding?:Two classes
+    Log transform before thresholding?:No
+    Assign pixels in the middle intensity class to the foreground or the background?:Foreground
+    Size of adaptive window:10
+    Lower outlier fraction:0.05
+    Upper outlier fraction:0.05
+    Averaging method:Mean
+    Variance method:Standard deviation
+    # of deviations:2
+    Thresholding method:Default
+
+MeasureObjectSizeShape:[module_num:13|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select object sets to measure:InvertedWell
+    Calculate the Zernike features?:No
+    Calculate the advanced features?:No
+
+FilterObjects:[module_num:14|svn_version:'Unknown'|variable_revision_number:8|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the objects to filter:InvertedWell
+    Name the output objects:FilteredInvertedObjects
+    Select the filtering mode:Measurements
+    Select the filtering method:Limits
+    Select the objects that contain the filtered objects:None
+    Select the location of the rules or classifier file:Elsewhere...|
+    Rules or classifier file name:rules.txt
+    Class number:1
+    Measurement count:2
+    Additional object count:0
+    Assign overlapping child to:Both parents
+    Select the measurement to filter by:AreaShape_Eccentricity
+    Filter using a minimum measurement value?:No
+    Minimum value:0.0
+    Filter using a maximum measurement value?:Yes
+    Maximum value:0.8
+    Select the measurement to filter by:AreaShape_Area
+    Filter using a minimum measurement value?:Yes
+    Minimum value:375
+    Filter using a maximum measurement value?:No
+    Maximum value:1.0
+
+IdentifySecondaryObjects:[module_num:15|svn_version:'Unknown'|variable_revision_number:10|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input objects:FilteredInvertedObjects
+    Name the objects to be identified:InvertedBubbleEdges
+    Select the method to identify the secondary objects:Distance - N
+    Select the input image:Brightfield
+    Number of pixels by which to expand the primary objects:25
+    Regularization factor:0.05
+    Discard secondary objects touching the border of the image?:No
+    Discard the associated primary objects?:No
+    Name the new primary objects:FilteredNuclei
+    Fill holes in identified objects?:Yes
+    Threshold setting version:12
+    Threshold strategy:Global
+    Thresholding method:Minimum Cross-Entropy
+    Threshold smoothing scale:1.3488
+    Threshold correction factor:1
+    Lower and upper bounds on threshold:(0.0, 1.0)
+    Manual threshold:0.0
+    Select the measurement to threshold with:None
+    Two-class or three-class thresholding?:Two classes
+    Log transform before thresholding?:No
+    Assign pixels in the middle intensity class to the foreground or the background?:Foreground
+    Size of adaptive window:10
+    Lower outlier fraction:0.05
+    Upper outlier fraction:0.05
+    Averaging method:Mean
+    Variance method:Standard deviation
+    # of deviations:2
+    Thresholding method:Otsu
+
+ConvertObjectsToImage:[module_num:16|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input objects:FilteredInvertedObjects
+    Name the output image:InvertedWellImage
+    Select the color format:Binary (black & white)
+    Select the colormap:Default
+
+ConvertObjectsToImage:[module_num:17|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input objects:NonInvertedWell
+    Name the output image:NonInvertedWellImage
+    Select the color format:Binary (black & white)
+    Select the colormap:Default
+
+ImageMath:[module_num:18|svn_version:'Unknown'|variable_revision_number:5|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Operation:Add
+    Raise the power of the result by:1.0
+    Multiply the result by:1.0
+    Add to result:0.0
+    Set values less than 0 equal to 0?:Yes
+    Set values greater than 1 equal to 1?:Yes
+    Replace invalid values with 0?:Yes
+    Ignore the image masks?:No
+    Name the output image:WellImageAfterMath
+    Image or measurement?:Image
+    Select the first image:NonInvertedWellImage
+    Multiply the first image by:1.0
+    Measurement:
+    Image or measurement?:Image
+    Select the second image:InvertedWellImage
+    Multiply the second image by:1.0
+    Measurement:
+
+IdentifyPrimaryObjects:[module_num:19|svn_version:'Unknown'|variable_revision_number:14|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:WellImageAfterMath
+    Name the primary objects to be identified:Well
+    Typical diameter of objects, in pixel units (Min,Max):1250,1500
+    Discard objects outside the diameter range?:No
+    Discard objects touching the border of the image?:No
+    Method to distinguish clumped objects:Shape
+    Method to draw dividing lines between clumped objects:Intensity
+    Size of smoothing filter:10
+    Suppress local maxima that are closer than this minimum allowed distance:1500
+    Speed up by using lower-resolution image to find local maxima?:Yes
+    Fill holes in identified objects?:After both thresholding and declumping
+    Automatically calculate size of smoothing filter for declumping?:Yes
+    Automatically calculate minimum allowed distance between local maxima?:No
+    Handling of objects if excessive number of objects identified:Continue
+    Maximum number of objects:500
+    Display accepted local maxima?:No
+    Select maxima color:Blue
+    Use advanced settings?:Yes
+    Threshold setting version:12
+    Threshold strategy:Global
+    Thresholding method:Otsu
+    Threshold smoothing scale:0
+    Threshold correction factor:1.0
+    Lower and upper bounds on threshold:0.1,1
+    Manual threshold:0.5
+    Select the measurement to threshold with:None
+    Two-class or three-class thresholding?:Two classes
+    Log transform before thresholding?:No
+    Assign pixels in the middle intensity class to the foreground or the background?:Foreground
+    Size of adaptive window:10
+    Lower outlier fraction:0.05
+    Upper outlier fraction:0.05
+    Averaging method:Mean
+    Variance method:Standard deviation
+    # of deviations:2
+    Thresholding method:Default
+
+ExpandOrShrinkObjects:[module_num:20|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input objects:Well
+    Name the output objects:WellEdgesMasked
+    Select the operation:Shrink objects by a specified number of pixels
+    Number of pixels by which to expand or shrink:30
+    Fill holes in objects so that all objects shrink to a single point?:No
+
+ConvertObjectsToImage:[module_num:21|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input objects:WellEdgesMasked
+    Name the output image:WellMaskImage
+    Select the color format:Binary (black & white)
+    Select the colormap:Default
+
+ConvertObjectsToImage:[module_num:22|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input objects:InvertedBubbleEdges
+    Name the output image:InvertedBubbleEdgesMaskImage
+    Select the color format:Binary (black & white)
+    Select the colormap:Default
+
+ImageMath:[module_num:23|svn_version:'Unknown'|variable_revision_number:5|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Operation:And
+    Raise the power of the result by:1.0
+    Multiply the result by:1.0
+    Add to result:0.0
+    Set values less than 0 equal to 0?:Yes
+    Set values greater than 1 equal to 1?:Yes
+    Replace invalid values with 0?:Yes
+    Ignore the image masks?:No
+    Name the output image:ShavedBubbleMaskImage
+    Image or measurement?:Image
+    Select the first image:WellMaskImage
+    Multiply the first image by:1.0
+    Measurement:
+    Image or measurement?:Image
+    Select the second image:InvertedBubbleEdgesMaskImage
+    Multiply the second image by:1.0
+    Measurement:
+
+ImageMath:[module_num:24|svn_version:'Unknown'|variable_revision_number:5|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Operation:Subtract
+    Raise the power of the result by:1.0
+    Multiply the result by:1.0
+    Add to result:0.0
+    Set values less than 0 equal to 0?:Yes
+    Set values greater than 1 equal to 1?:Yes
+    Replace invalid values with 0?:Yes
+    Ignore the image masks?:No
+    Name the output image:BubbleAndWellMaskImage
+    Image or measurement?:Image
+    Select the first image:WellMaskImage
+    Multiply the first image by:1.0
+    Measurement:
+    Image or measurement?:Image
+    Select the second image:ShavedBubbleMaskImage
+    Multiply the second image by:1.0
+    Measurement:
+
+MaskImage:[module_num:25|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:Brightfield
+    Name the output image:MaskedInvertedWellImage
+    Use objects or an image as a mask?:Image
+    Select object for mask:None
+    Select image for mask:BubbleAndWellMaskImage
+    Invert the mask?:No
+
+MaskImage:[module_num:26|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:Probabilities
+    Name the output image:MaskedProbabilityImage
+    Use objects or an image as a mask?:Image
+    Select object for mask:None
+    Select image for mask:BubbleAndWellMaskImage
+    Invert the mask?:No
+
+ColorToGray:[module_num:27|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:MaskedProbabilityImage
+    Conversion method:Split
+    Image type:RGB
+    Name the output image:OrigGray
+    Relative weight of the red channel:1.0
+    Relative weight of the green channel:1.0
+    Relative weight of the blue channel:1.0
+    Convert red to gray?:Yes
+    Name the output image:ColonyArea
+    Convert green to gray?:Yes
+    Name the output image:BallingArea
+    Convert blue to gray?:Yes
+    Name the output image:BackgroundArea
+    Convert hue to gray?:Yes
+    Name the output image:OrigHue
+    Convert saturation to gray?:Yes
+    Name the output image:OrigSaturation
+    Convert value to gray?:Yes
+    Name the output image:OrigValue
+    Channel count:1
+    Channel number:1
+    Relative weight of the channel:1.0
+    Image name:Channel1
+
+IdentifyPrimaryObjects:[module_num:28|svn_version:'Unknown'|variable_revision_number:14|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:BallingArea
+    Name the primary objects to be identified:BallingObjects
+    Typical diameter of objects, in pixel units (Min,Max):15,5000
+    Discard objects outside the diameter range?:Yes
+    Discard objects touching the border of the image?:No
+    Method to distinguish clumped objects:Intensity
+    Method to draw dividing lines between clumped objects:Shape
+    Size of smoothing filter:5
+    Suppress local maxima that are closer than this minimum allowed distance:10
+    Speed up by using lower-resolution image to find local maxima?:No
+    Fill holes in identified objects?:After both thresholding and declumping
+    Automatically calculate size of smoothing filter for declumping?:No
+    Automatically calculate minimum allowed distance between local maxima?:No
+    Handling of objects if excessive number of objects identified:Continue
+    Maximum number of objects:500
+    Display accepted local maxima?:No
+    Select maxima color:Blue
+    Use advanced settings?:Yes
+    Threshold setting version:12
+    Threshold strategy:Global
+    Thresholding method:Minimum Cross-Entropy
+    Threshold smoothing scale:0
+    Threshold correction factor:1.0
+    Lower and upper bounds on threshold:0.3,1.0
+    Manual threshold:0.0
+    Select the measurement to threshold with:None
+    Two-class or three-class thresholding?:Two classes
+    Log transform before thresholding?:No
+    Assign pixels in the middle intensity class to the foreground or the background?:Foreground
+    Size of adaptive window:50
+    Lower outlier fraction:0.05
+    Upper outlier fraction:0.05
+    Averaging method:Mean
+    Variance method:Standard deviation
+    # of deviations:2.0
+    Thresholding method:Otsu
+
+MeasureObjectSizeShape:[module_num:29|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select object sets to measure:BallingObjects
+    Calculate the Zernike features?:No
+    Calculate the advanced features?:No
+
+FilterObjects:[module_num:30|svn_version:'Unknown'|variable_revision_number:8|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the objects to filter:BallingObjects
+    Name the output objects:BallCraterObjects
+    Select the filtering mode:Measurements
+    Select the filtering method:Limits
+    Select the objects that contain the filtered objects:None
+    Select the location of the rules or classifier file:Elsewhere...|
+    Rules or classifier file name:rules.txt
+    Class number:1
+    Measurement count:1
+    Additional object count:0
+    Assign overlapping child to:Both parents
+    Select the measurement to filter by:AreaShape_Area
+    Filter using a minimum measurement value?:Yes
+    Minimum value:959
+    Filter using a maximum measurement value?:No
+    Maximum value:1.0
+
+EnhanceEdges:[module_num:31|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:MaskedInvertedWellImage
+    Name the output image:EdgedImage
+    Automatically calculate the threshold?:No
+    Absolute threshold:0.16
+    Threshold adjustment factor:1.0
+    Select an edge-finding method:Sobel
+    Select edge direction to enhance:All
+    Calculate Gaussian's sigma automatically?:No
+    Gaussian's sigma value:0.1
+    Calculate value for low threshold automatically?:Yes
+    Low threshold value:0.05
+
+IdentifyPrimaryObjects:[module_num:32|svn_version:'Unknown'|variable_revision_number:14|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:EdgedImage
+    Name the primary objects to be identified:ColonyBeforeHolesFilled
+    Typical diameter of objects, in pixel units (Min,Max):29,2000
+    Discard objects outside the diameter range?:Yes
+    Discard objects touching the border of the image?:No
+    Method to distinguish clumped objects:Shape
+    Method to draw dividing lines between clumped objects:Shape
+    Size of smoothing filter:10
+    Suppress local maxima that are closer than this minimum allowed distance:125
+    Speed up by using lower-resolution image to find local maxima?:No
+    Fill holes in identified objects?:Never
+    Automatically calculate size of smoothing filter for declumping?:Yes
+    Automatically calculate minimum allowed distance between local maxima?:No
+    Handling of objects if excessive number of objects identified:Continue
+    Maximum number of objects:500
+    Display accepted local maxima?:No
+    Select maxima color:Blue
+    Use advanced settings?:Yes
+    Threshold setting version:12
+    Threshold strategy:Global
+    Thresholding method:Minimum Cross-Entropy
+    Threshold smoothing scale:1.5
+    Threshold correction factor:1.0
+    Lower and upper bounds on threshold:0.0135,0.0135
+    Manual threshold:0.008
+    Select the measurement to threshold with:None
+    Two-class or three-class thresholding?:Two classes
+    Log transform before thresholding?:No
+    Assign pixels in the middle intensity class to the foreground or the background?:Foreground
+    Size of adaptive window:10
+    Lower outlier fraction:0.05
+    Upper outlier fraction:0.05
+    Averaging method:Mean
+    Variance method:Standard deviation
+    # of deviations:2
+    Thresholding method:Default
+
+FillObjects:[module_num:33|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input object:ColonyBeforeHolesFilled
+    Name the output object:Colony
+    Minimum hole size:26.0
+    Planewise fill:No
+
+RelateObjects:[module_num:34|svn_version:'Unknown'|variable_revision_number:5|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Parent objects:Colony
+    Child objects:BallCraterObjects
+    Calculate child-parent distances?:None
+    Calculate per-parent means for all child measurements?:Yes
+    Calculate distances to other parents?:No
+    Do you want to save the children with parents as a new object set?:No
+    Name the output object:RelateObjects
+    Parent name:None
+    Parent name:None
+    Parent name:None
+    Parent name:None
+    Parent name:None
+    Parent name:None
+    Parent name:None
+
+MeasureObjectSizeShape:[module_num:35|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select object sets to measure:Colony, BallCraterObjects
+    Calculate the Zernike features?:No
+    Calculate the advanced features?:No
+
+MeasureObjectIntensity:[module_num:36|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select images to measure:Brightfield
+    Select objects to measure:Colony
+
+OverlayObjects:[module_num:37|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Input:Brightfield
+    Name the output image:OverlayColonyObjects
+    Objects:Colony
+    Opacity:0.05
+
+OverlayOutlines:[module_num:38|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Display outlines on a blank image?:No
+    Select image on which to display outlines:OverlayColonyObjects
+    Name the output image:ColonyOverlay
+    Outline display mode:Color
+    Select method to determine brightness of outlines:Max of image
+    How to outline:Thick
+    Select outline color:green
+    Select objects to display:Colony
+    Select outline color:red
+    Select objects to display:BallCraterObjects
+
+DisplayDataOnImage:[module_num:39|svn_version:'Unknown'|variable_revision_number:6|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Display object or image measurements?:Object
+    Select the input objects:Colony
+    Measurement to display:Number_Object_Number
+    Select the image on which to display the measurements:ColonyOverlay
+    Text color:blue
+    Name the output image that has the measurements displayed:DisplayImage1
+    Font size (points):12
+    Number of decimals:0
+    Image elements to save:Image
+    Annotation offset (in pixels):0
+    Display mode:Text
+    Color map:Default
+    Display background image?:Yes
+    Color map scale:Use this image's measurement range
+    Color map range:0.0,1.0
+
+MeasureImageIntensity:[module_num:40|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select images to measure:BallingArea, ColonyArea
+    Measure the intensity only from areas enclosed by objects?:Yes
+    Select input object sets:BallCraterObjects, Colony
+    Calculate custom percentiles:No
+    Specify percentiles to measure:10,90
+
+SaveImages:[module_num:41|svn_version:'Unknown'|variable_revision_number:15|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the type of image to save:Image
+    Select the image to save:DisplayImage1
+    Select method for constructing file names:From image filename
+    Select image name for file prefix:Brightfield
+    Enter single file name:OrigBlue
+    Number of digits:4
+    Append a suffix to the image file name?:Yes
+    Text to append to the image name:_outlines
+    Saved file format:png
+    Output file location:Default Output Folder|\g<ch_0_out_dir>
+    Image bit depth:8-bit integer
+    Overwrite existing files without warning?:Yes
+    When to save:Every cycle
+    Record the file and path information to the saved image?:Yes
+    Create subfolders in the output folder?:No
+    Base image folder:Elsewhere...|
+    How to save the series:T (Time)
+
+ExportToSpreadsheet:[module_num:42|svn_version:'Unknown'|variable_revision_number:13|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the column delimiter:Comma (",")
+    Add image metadata columns to your object data file?:Yes
+    Add image file and folder names to your object data file?:No
+    Select the measurements to export:No
+    Calculate the per-image mean values for object measurements?:No
+    Calculate the per-image median values for object measurements?:No
+    Calculate the per-image standard deviation values for object measurements?:No
+    Output file location:Default Output Folder|\g<file_out_dir>
+    Create a GenePattern GCT file?:No
+    Select source of sample row name:Metadata
+    Select the image to use as the identifier:None
+    Select the metadata to use as the identifier:None
+    Export all measurement types?:No
+    Press button to select measurements:Well|Number_Object_Number,Well|Location_Center_Y,Well|Location_Center_X,Well|Math_Well_MinorAxisLength_um,Well|Math_Well_Location_um_Y,Well|Math_Well_Location_um_X,Well|Math_Well_MajorAxisLength_um,Well|AreaShape_Perimeter,Well|AreaShape_FormFactor,Well|AreaShape_Solidity,Well|AreaShape_Center_Y,Well|AreaShape_Center_X,Well|AreaShape_MajorAxisLength,Well|AreaShape_MinFeretDiameter,Well|AreaShape_Area,Well|AreaShape_MaxFeretDiameter,Well|AreaShape_EulerNumber,Well|AreaShape_MedianRadius,Well|AreaShape_Compactness,Well|AreaShape_Extent,Well|AreaShape_Orientation,Well|AreaShape_Eccentricity,Well|AreaShape_MaximumRadius,Well|AreaShape_MinorAxisLength,Well|AreaShape_MeanRadius,Image|Count_Colony,Image|Count_WellEdgesMasked,Image|Count_Well,Image|Count_FilteredInvertedObjects,Image|Count_AllColony,Image|Count_InvertedWell,Image|Count_NonInvertedWell,Image|Group_Index,Image|Group_Number,Image|Width_ch_0,Image|ExecutionTime_32CalculateMath,Image|ExecutionTime_13ConvertObjectsToImage,Image|ExecutionTime_30CalculateMath,Image|ExecutionTime_39MeasureTexture,Image|ExecutionTime_24MeasureObjectIntensity,Image|ExecutionTime_22IdentifyPrimaryObjects,Image|ExecutionTime_27OverlayOutlines,Image|ExecutionTime_04Resize,Image|ExecutionTime_15ImageMath,Image|ExecutionTime_33CalculateMath,Image|ExecutionTime_19ImageMath,Image|ExecutionTime_35CalculateMath,Image|ExecutionTime_38CalculateMath,Image|ExecutionTime_11MeasureObjectSizeShape,Image|ExecutionTime_34CalculateMath,Image|ExecutionTime_09IdentifyPrimaryObjects,Image|ExecutionTime_01LoadData,Image|ExecutionTime_37CalculateMath,Image|ExecutionTime_40SaveImages,Image|ExecutionTime_25FilterObjects,Image|ExecutionTime_31CalculateMath,Image|ExecutionTime_16IdentifyPrimaryObjects,Image|ExecutionTime_10IdentifyPrimaryObjects,Image|ExecutionTime_20MaskImage,Image|ExecutionTime_06ApplyThreshold,Image|ExecutionTime_36CalculateMath,Image|ExecutionTime_18ConvertObjectsToImage,Image|ExecutionTime_21EnhanceEdges,Image|ExecutionTime_26MeasureObjectSizeShape,Image|ExecutionTime_03FlagImage,Image|ExecutionTime_05Morph,Image|ExecutionTime_12FilterObjects,Image|ExecutionTime_07Morph,Image|ExecutionTime_14ConvertObjectsToImage,Image|ExecutionTime_02MeasureImageIntensity,Image|ExecutionTime_28DisplayDataOnImage,Image|ExecutionTime_08MaskImage,Image|ExecutionTime_29DisplayDataOnImage,Image|ExecutionTime_23MeasureObjectSizeShape,Image|ExecutionTime_17ExpandOrShrinkObjects,Image|image_source_path,Image|URL_ch_0,Image|MD5Digest_ch_0,Image|Scaling_ch_0,Image|ModuleError_32CalculateMath,Image|ModuleError_13ConvertObjectsToImage,Image|ModuleError_30CalculateMath,Image|ModuleError_39MeasureTexture,Image|ModuleError_24MeasureObjectIntensity,Image|ModuleError_05Morph,Image|ModuleError_27OverlayOutlines,Image|ModuleError_04Resize,Image|ModuleError_15ImageMath,Image|ModuleError_33CalculateMath,Image|ModuleError_19ImageMath,Image|ModuleError_35CalculateMath,Image|ModuleError_38CalculateMath,Image|ModuleError_11MeasureObjectSizeShape,Image|ModuleError_34CalculateMath,Image|ModuleError_03FlagImage,Image|ModuleError_01LoadData,Image|ModuleError_37CalculateMath,Image|ModuleError_40SaveImages,Image|ModuleError_25FilterObjects,Image|ModuleError_31CalculateMath,Image|ModuleError_06ApplyThreshold,Image|ModuleError_08MaskImage,Image|ModuleError_20MaskImage,Image|ModuleError_16IdentifyPrimaryObjects,Image|ModuleError_36CalculateMath,Image|ModuleError_21EnhanceEdges,Image|ModuleError_18ConvertObjectsToImage,Image|ModuleError_26MeasureObjectSizeShape,Image|ModuleError_09IdentifyPrimaryObjects,Image|ModuleError_22IdentifyPrimaryObjects,Image|ModuleError_10IdentifyPrimaryObjects,Image|ModuleError_12FilterObjects,Image|ModuleError_07Morph,Image|ModuleError_14ConvertObjectsToImage,Image|ModuleError_02MeasureImageIntensity,Image|ModuleError_28DisplayDataOnImage,Image|ModuleError_29DisplayDataOnImage,Image|ModuleError_23MeasureObjectSizeShape,Image|ModuleError_17ExpandOrShrinkObjects,Image|Intensity_MinIntensity_ch_0,Image|Intensity_StdIntensity_ch_0,Image|Intensity_TotalIntensity_ch_0,Image|Intensity_TotalArea_ch_0,Image|Intensity_PercentMaximal_ch_0,Image|Intensity_MADIntensity_ch_0,Image|Intensity_MeanIntensity_ch_0,Image|Intensity_UpperQuartileIntensity_ch_0,Image|Intensity_MaxIntensity_ch_0,Image|Intensity_MedianIntensity_ch_0,Image|Intensity_LowerQuartileIntensity_ch_0,Image|Height_ch_0,Image|PathName_ch_0,Image|PathName_DisplayImage2,Image|Threshold_OrigThreshold_ch_0_InvertedThresh,Image|Threshold_OrigThreshold_Well,Image|Threshold_OrigThreshold_AllColony,Image|Threshold_OrigThreshold_InvertedWell,Image|Threshold_OrigThreshold_NonInvertedWell,Image|Threshold_SumOfEntropies_ch_0_InvertedThresh,Image|Threshold_SumOfEntropies_Well,Image|Threshold_SumOfEntropies_AllColony,Image|Threshold_SumOfEntropies_InvertedWell,Image|Threshold_SumOfEntropies_NonInvertedWell,Image|Threshold_WeightedVariance_ch_0_InvertedThresh,Image|Threshold_WeightedVariance_Well,Image|Threshold_WeightedVariance_AllColony,Image|Threshold_WeightedVariance_InvertedWell,Image|Threshold_WeightedVariance_NonInvertedWell,Image|Threshold_FinalThreshold_ch_0_InvertedThresh,Image|Threshold_FinalThreshold_Well,Image|Threshold_FinalThreshold_AllColony,Image|Threshold_FinalThreshold_InvertedWell,Image|Threshold_FinalThreshold_NonInvertedWell,Image|FileName_ch_0,Image|FileName_DisplayImage2,Image|Metadata_ZHeight,Image|Metadata_WellImageNotTiled_QCFlag,Image|Metadata_Scene,Image|Metadata_t,WellEdgesMasked|Number_Object_Number,WellEdgesMasked|Location_Center_Y,WellEdgesMasked|Location_Center_X,Colony|Parent_AllColony,Colony|Number_Object_Number,Colony|Texture_DifferenceEntropy_ResizedRaw_16_0,Colony|Texture_DifferenceEntropy_ResizedRaw_16_45,Colony|Texture_DifferenceEntropy_ResizedRaw_16_135,Colony|Texture_DifferenceEntropy_ResizedRaw_16_90,Colony|Texture_InfoMeas2_ResizedRaw_16_0,Colony|Texture_InfoMeas2_ResizedRaw_16_45,Colony|Texture_InfoMeas2_ResizedRaw_16_135,Colony|Texture_InfoMeas2_ResizedRaw_16_90,Colony|Texture_DifferenceVariance_ResizedRaw_16_0,Colony|Texture_DifferenceVariance_ResizedRaw_16_45,Colony|Texture_DifferenceVariance_ResizedRaw_16_135,Colony|Texture_DifferenceVariance_ResizedRaw_16_90,Colony|Texture_SumVariance_ResizedRaw_16_90,Colony|Texture_SumVariance_ResizedRaw_16_45,Colony|Texture_SumVariance_ResizedRaw_16_135,Colony|Texture_SumVariance_ResizedRaw_16_0,Colony|Texture_AngularSecondMoment_ResizedRaw_16_90,Colony|Texture_AngularSecondMoment_ResizedRaw_16_45,Colony|Texture_AngularSecondMoment_ResizedRaw_16_135,Colony|Texture_AngularSecondMoment_ResizedRaw_16_0,Colony|Texture_Entropy_ResizedRaw_16_90,Colony|Texture_Entropy_ResizedRaw_16_45,Colony|Texture_Entropy_ResizedRaw_16_135,Colony|Texture_Entropy_ResizedRaw_16_0,Colony|Texture_Correlation_ResizedRaw_16_90,Colony|Texture_Correlation_ResizedRaw_16_45,Colony|Texture_Correlation_ResizedRaw_16_135,Colony|Texture_Correlation_ResizedRaw_16_0,Colony|Texture_SumAverage_ResizedRaw_16_0,Colony|Texture_SumAverage_ResizedRaw_16_45,Colony|Texture_SumAverage_ResizedRaw_16_135,Colony|Texture_SumAverage_ResizedRaw_16_90,Colony|Texture_Variance_ResizedRaw_16_90,Colony|Texture_Variance_ResizedRaw_16_45,Colony|Texture_Variance_ResizedRaw_16_135,Colony|Texture_Variance_ResizedRaw_16_0,Colony|Texture_SumEntropy_ResizedRaw_16_90,Colony|Texture_SumEntropy_ResizedRaw_16_45,Colony|Texture_SumEntropy_ResizedRaw_16_135,Colony|Texture_SumEntropy_ResizedRaw_16_0,Colony|Texture_InverseDifferenceMoment_ResizedRaw_16_0,Colony|Texture_InverseDifferenceMoment_ResizedRaw_16_45,Colony|Texture_InverseDifferenceMoment_ResizedRaw_16_135,Colony|Texture_InverseDifferenceMoment_ResizedRaw_16_90,Colony|Texture_Contrast_ResizedRaw_16_0,Colony|Texture_Contrast_ResizedRaw_16_45,Colony|Texture_Contrast_ResizedRaw_16_135,Colony|Texture_Contrast_ResizedRaw_16_90,Colony|Texture_InfoMeas1_ResizedRaw_16_90,Colony|Texture_InfoMeas1_ResizedRaw_16_45,Colony|Texture_InfoMeas1_ResizedRaw_16_135,Colony|Texture_InfoMeas1_ResizedRaw_16_0,Colony|Location_Center_Y,Colony|Location_Center_X,Colony|AreaShape_Perimeter,Colony|AreaShape_FormFactor,Colony|AreaShape_MinorAxisLength,Colony|AreaShape_Orientation,Colony|AreaShape_MaxFeretDiameter,Colony|AreaShape_MinFeretDiameter,Colony|AreaShape_Solidity,Colony|AreaShape_EulerNumber,Colony|AreaShape_Eccentricity,Colony|AreaShape_Compactness,Colony|AreaShape_Extent,Colony|AreaShape_MedianRadius,Colony|AreaShape_MaximumRadius,Colony|AreaShape_MeanRadius,Colony|AreaShape_Area,Colony|AreaShape_MajorAxisLength,Colony|AreaShape_Center_Y,Colony|AreaShape_Center_X,Colony|Math_Colony_MinorAxisLength_um,Colony|Math_Colony_MajorAxisLength_um,Colony|Math_Colony_Location_um_Y,Colony|Math_Colony_Location_um_X,Colony|Math_Colony_Area_um2,FilteredInvertedObjects|Location_Center_Y,FilteredInvertedObjects|Location_Center_X,FilteredInvertedObjects|Parent_InvertedWell,FilteredInvertedObjects|Number_Object_Number,AllColony|Number_Object_Number,AllColony|Intensity_MassDisplacement_ResizedRaw,AllColony|Intensity_MinIntensity_ResizedRaw,AllColony|Intensity_StdIntensity_ResizedRaw,AllColony|Intensity_IntegratedIntensityEdge_ResizedRaw,AllColony|Intensity_UpperQuartileIntensity_ResizedRaw,AllColony|Intensity_IntegratedIntensity_ResizedRaw,AllColony|Intensity_MinIntensityEdge_ResizedRaw,AllColony|Intensity_MADIntensity_ResizedRaw,AllColony|Intensity_MeanIntensity_ResizedRaw,AllColony|Intensity_MeanIntensityEdge_ResizedRaw,AllColony|Intensity_MaxIntensity_ResizedRaw,AllColony|Intensity_MedianIntensity_ResizedRaw,AllColony|Intensity_LowerQuartileIntensity_ResizedRaw,AllColony|Intensity_MaxIntensityEdge_ResizedRaw,AllColony|Intensity_StdIntensityEdge_ResizedRaw,AllColony|Location_MaxIntensity_Y_ResizedRaw,AllColony|Location_MaxIntensity_X_ResizedRaw,AllColony|Location_CenterMassIntensity_Y_ResizedRaw,AllColony|Location_CenterMassIntensity_X_ResizedRaw,AllColony|Location_Center_Y,AllColony|Location_Center_X,AllColony|AreaShape_Perimeter,AllColony|AreaShape_FormFactor,AllColony|AreaShape_Orientation,AllColony|AreaShape_MaxFeretDiameter,AllColony|AreaShape_MinFeretDiameter,AllColony|AreaShape_Solidity,AllColony|AreaShape_EulerNumber,AllColony|AreaShape_MeanRadius,AllColony|AreaShape_MedianRadius,AllColony|AreaShape_Compactness,AllColony|AreaShape_Extent,AllColony|AreaShape_Eccentricity,AllColony|AreaShape_MaximumRadius,AllColony|AreaShape_MinorAxisLength,AllColony|AreaShape_Area,AllColony|AreaShape_MajorAxisLength,AllColony|AreaShape_Center_Y,AllColony|AreaShape_Center_X,AllColony|Children_Colony_Count,InvertedWell|Number_Object_Number,InvertedWell|Location_Center_Y,InvertedWell|Location_Center_X,InvertedWell|Children_FilteredInvertedObjects_Count,InvertedWell|AreaShape_Perimeter,InvertedWell|AreaShape_FormFactor,InvertedWell|AreaShape_Center_Y,InvertedWell|AreaShape_Center_X,InvertedWell|AreaShape_MaxFeretDiameter,InvertedWell|AreaShape_MinFeretDiameter,InvertedWell|AreaShape_Solidity,InvertedWell|AreaShape_EulerNumber,InvertedWell|AreaShape_Eccentricity,InvertedWell|AreaShape_Compactness,InvertedWell|AreaShape_Extent,InvertedWell|AreaShape_Orientation,InvertedWell|AreaShape_MedianRadius,InvertedWell|AreaShape_MaximumRadius,InvertedWell|AreaShape_MinorAxisLength,InvertedWell|AreaShape_Area,InvertedWell|AreaShape_MajorAxisLength,InvertedWell|AreaShape_MeanRadius,Experiment|Modification_Timestamp,Experiment|Run_Timestamp,Experiment|Pipeline_Pipeline,Experiment|CellProfiler_Version,NonInvertedWell|Location_Center_Y,NonInvertedWell|Location_Center_X,NonInvertedWell|Number_Object_Number
+    Representation of Nan/Inf:Null
+    Add a prefix to file names?:No
+    Filename prefix:Colony_
+    Overwrite existing files without warning?:Yes
+    Data to export:Colony
+    Combine these object measurements with those of the previous object?:No
+    File name:ColonyDATA.csv
+    Use the object name for the file name?:No
+    Data to export:BallCraterObjects
+    Combine these object measurements with those of the previous object?:No
+    File name:BallCraterDATA.csv
+    Use the object name for the file name?:No
+    Data to export:Image
+    Combine these object measurements with those of the previous object?:No
+    File name:ImageDATA.csv
+    Use the object name for the file name?:No
+    Data to export:Experiment
+    Combine these object measurements with those of the previous object?:No
+    File name:ExperimentDATA.csv
+    Use the object name for the file name?:No

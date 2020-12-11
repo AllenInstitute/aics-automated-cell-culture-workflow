@@ -1,3 +1,9 @@
+# Automated Stem Cell Colony Morphology Well Scoring Image Processing Pipelines
+
+## **Content**
+* Ilastik and CellProfiler pipeline files used for the automated well scoring of hiPSC lines colonies.  Example images are included in the InputImage folder for testing the pipelines. 
+* Instructions for running the two pipelines are included as a word document in the ColonyClassifierSegmentationPipelines folder. Please contact Derek Thirstrup at derekt@alleninstitute.org with any questions.
+
 # Venus Method Pkg files
 
 ## **Content**
